@@ -1,0 +1,8 @@
+.button-card {
+    background: transparent;
+    text-align: left;
+    text-transform: none;
+  }
+  .button-card:hover {
+    opacity: 1;
+  }
