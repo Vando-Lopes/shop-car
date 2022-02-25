@@ -1,11 +1,10 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.css';
 import { Layout, Menu } from 'antd';
 import {
-    UserOutlined,
-    VideoCameraOutlined,
+    ShoppingCartOutlined,
+    UserOutlined
 } from '@ant-design/icons';
 import { Link } from 'react-router-dom';
 
@@ -23,15 +22,15 @@ const NavBar = (props) => (
                 bottom: 0,
             }}
         >
-            <div className="logo">SHOP-CAR</div>
+
             <Menu theme="dark" mode="inline" >
                 <Link to='/ofertas' >
-                    <Menu.Item key="1" icon={<UserOutlined />} >
+                    <Menu.Item key="1" icon={<ShoppingCartOutlined />} >
                         Ofertas
                     </Menu.Item>
                 </Link>
                 <Link to='/admin' >
-                    <Menu.Item key="2" icon={<VideoCameraOutlined />} >
+                    <Menu.Item key="2" icon={<UserOutlined />} >
                         Admnistração
                     </Menu.Item>
                 </Link>

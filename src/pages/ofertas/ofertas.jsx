@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import './styles.css'
 import { db } from '../../firebase-config'
-import { Card, Carousel, Col, Input, Row } from 'antd';
-import { collection, getDocs, addDoc, deleteDoc, updateDoc, doc } from 'firebase/firestore'
+import { Card, Carousel, Col, Row } from 'antd';
+import { collection, getDocs, updateDoc, doc } from 'firebase/firestore'
 import Modal from 'antd/lib/modal/Modal';
+import { useStyles } from "./ofertas.styles.ts"
+import NoImg from '../../assets/noImg.png' 
 
 const Ofertas = () => {
   const [offers, setOffers] = useState([])
   const carrosCollectionRef = collection(db, "carros")
   const [showOffer, setShowOffer] = useState(false);
   const [offer, setOffer] = useState({})
-
+  const styles = useStyles
 
   const showOfferModal = (index) => {
     setShowOffer(true);
@@ -32,17 +33,6 @@ const Ofertas = () => {
     updateDoc(offerDoc, edit)
   }
 
-  const contentStyle = {
-    height: '160px',
-    color: '#fff',
-    lineHeight: '160px',
-    textAlign: 'center',
-    background: '#364d79',
-  };
-
-  function onChange(a, b, c) {
-    console.log(a, b, c);
-  }
 
   useEffect(() => {
     const getOffers = async () => {
@@ -54,9 +44,9 @@ const Ofertas = () => {
 
   return (
     <>
-      <div className="site-layout-background" style={{ padding: 24, textAlign: 'center', marginLeft: 200 }}>
+      <div style={styles.wrapper}>
         <h2>Ofertas</h2>
-        <div className="site-card-wrapper">
+        <div style={styles.cardWrapper}>
           <Row gutter={16}>
             {offers.map((offer) => {
               return (
@@ -66,7 +56,12 @@ const Ofertas = () => {
                     showOfferModal()
                     updateOffer(offer)
                   }}>
-                    <Card title={offer.marca + " - " + offer.modelo} style={{ marginTop: "25px" }} hoverable={true}>
+                    <Card
+                      title={offer.marca + " - " + offer.modelo}
+                      style={{ marginTop: "25px" }}
+                      hoverable={true}
+                      cover={<img style={{ height: "380px" }} alt="example" src={offer.imgs ? offer.imgs[0] : NoImg} />}
+                    >
                       <h2>Preço: {offer.preco}</h2>
                       <h4>Marca: {offer.marca}</h4>
                       <h4>Modelo: {offer.modelo}</h4>
@@ -82,23 +77,28 @@ const Ofertas = () => {
           <Modal title="Ver Oferta"
             visible={showOffer}
             okText={"Ok"}
-            onCancel={handleCancelOfferModal}>
-            <Carousel afterChange={onChange}>
-              <div>
-                <h3 style={contentStyle}>1</h3>
-              </div>
-              <div>
-                <h3 style={contentStyle}>2</h3>
-              </div>
-              <div>
-                <h3 style={contentStyle}>3</h3>
-              </div>
-              <div>
-                <h3 style={contentStyle}>4</h3>
-              </div>
-            </Carousel>
-            <Row>
-              <Col>
+            cancelText={"Cancelar"}
+            onCancel={handleCancelOfferModal}
+            onOk={handleOkOfferModal}
+          >
+            {offer.imgs ?
+              <Carousel>
+                {offer.imgs?.map((img) => {
+                  return (
+                    <div>
+                      <img src={img} alt="Foto" style={styles.contentStyleImg}></img>
+                    </div>
+                  )
+                })}
+              </Carousel>
+              : <Carousel>
+                <div>
+                  <h3 style={styles.contentStyle}>Não contém imagem</h3>
+                </div>
+              </Carousel>}
+
+            <Row gutter={[8, 16]} >
+              <Col span={12}>
                 <Card style={{ marginTop: "25px" }}>
                   <h4>Preço: {offer.preco}</h4>
                   <h4>Marca: {offer.marca}</h4>
@@ -108,8 +108,8 @@ const Ofertas = () => {
                   {/*<h4>Visualizações: {offer.views + 1}</h4>*/}
                 </Card>
               </Col>
-              <Col>
-                <Card style={{ marginTop: "25px", marginLeft: "100px" }}>
+              <Col span={12}>
+                <Card style={{ marginTop: "25px", }}>
                   <h4>Placa: {offer.placa}</h4>
                   <h4>Cidade: {offer.cidade}</h4>
                   <h4>Quilometragem: {offer.km}</h4>
@@ -117,13 +117,7 @@ const Ofertas = () => {
                 </Card>
               </Col>
             </Row>
-
           </Modal>
-
-
-
-
-
 
         </div>
       </div>
